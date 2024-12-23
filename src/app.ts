@@ -3,6 +3,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import productRoutes from './routes/productRoutes';
 import pool from './config/database';
+import usersRoutes from './routes/userRoutes';
+import orderRoutes from './routes/orderRoute';
 
 
 dotenv.config();
@@ -23,5 +25,7 @@ app.use(express.json());
 
 
 app.use('/api/products', productRoutes);
+app.use('/api/users', usersRoutes);
+app.use('/api/orders', orderRoutes);
 
 export default app;
