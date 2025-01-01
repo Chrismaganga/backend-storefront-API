@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-   "start": "ts-node-dev src/server.ts",
+    "start": "ts-node-dev src/server.ts",
     "dev": "nodemon src/server.ts",
     "build": "tsc",
     "lint": "eslint --ext .ts src --fix",
+   
     "test": "echo \"Error: no test specified\" && exit 1"
-    
   },
   "keywords": [],
   "author": "",

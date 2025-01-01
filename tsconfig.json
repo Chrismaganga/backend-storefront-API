@@ -9,6 +9,6 @@
     "forceConsistentCasingInFileNames": true, // Enforce consistent casing in imports
     "skipLibCheck": true                     // Skip type-checking of declaration files
   },
-  "include": ["src", "src/seedUsers.ts"],                        // Include files in the src directory
+  "include": ["src", "src/scripts/seedUsers.ts"],                        // Include files in the src directory
   "exclude": ["node_modules", "dist"]        // Exclude these directories
 }
