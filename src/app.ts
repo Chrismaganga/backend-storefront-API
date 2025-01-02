@@ -1,10 +1,10 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import productRoutes from './routes/productRoutes';
 import pool from './config/database';
-import usersRoutes from './routes/userRoutes';
 import orderRoutes from './routes/orderRoute';
+import { createUser, deleteUser, getUserById, getUsers, updateUser } from './models/user';
+import productRoutes from './routes/productRoutes';
 
 
 dotenv.config();
@@ -23,9 +23,17 @@ app.use(express.json());
   }
 })();
 
-
+// 
 app.use('/api/products', productRoutes);
-app.use('/api/users', usersRoutes);
+
 app.use('/api/orders', orderRoutes);
+
+// users
+app.get('/api/users', getUsers)
+app.get('/api/users/:id', getUserById)
+app.post('/api/users', createUser)
+app.put('/api/users/:id', updateUser)
+app.delete('/api/users/:id', deleteUser)
+
 
 export default app;
