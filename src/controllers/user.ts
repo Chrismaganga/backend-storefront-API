@@ -1,56 +1,61 @@
-// import { Request, Response } from 'express';
-// import { UserModel } from '../models/user';
+import { Request, Response } from 'express';
+import pool from '../config/database';
 
-// const userModel = new UserModel();
 
-// export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
-//     try {
-//         const users = await userModel.getAll();
-//         res.status(200).json(users);
-//     } catch (error) {
-//         res.status(500).json({ error: 'Failed to fetch users' });
-//     }
-// };
+export const getUsers = (request: Request, response: Response) => {
+  pool.query('SELECT * FROM users ORDER BY id ASC', (error, results) => {
+    if (error) {
+      throw error;
+    }
+    response.status(200).json(results.rows);
+  });
+};
 
-// export const getUserById = async (req: Request, res: Response): Promise<void> => {
-//     try {
-//         const id = parseInt(req.params.id, 10);
-//         const user = await userModel.getById(id);
-//         if (user) {
-//             res.status(200).json(user);
-//         } else {
-//             res.status(404).json({ error: 'User not found' });
-//         }
-//     } catch (error) {
-//         res.status(500).json({ error: 'Failed to fetch user' });
-//     }
-// };
+export const getUserById = (request: { params: { id: string } }, response: { status: (arg0: number) => { json: (arg0: any[]) => void } }) => {
+  const id = parseInt(request.params.id);
 
-// export const createUser = async (req: Request, res: Response): Promise<void> => {
-//     try {
-//         const user = await userModel.create(req.body);
-//         res.status(201).json(user);
-//     } catch (error) {
-//         res.status(500).json({ error: 'Failed to create user' });
-//     }
-// };
+  pool.query('SELECT * FROM users WHERE id = $1', [id], (error, results) => {
+    if (error) {
+      throw error;
+    }
+    response.status(200).json(results.rows);
+  });
+};
 
-// export const updateUser = async (req: Request, res: Response): Promise<void> => {
-//     try {
-//         const id = parseInt(req.params.id, 10);
-//         const user = await userModel.update(id, req.body);
-//         res.status(200).json(user);
-//     } catch (error) {
-//         res.status(500).json({ error: 'Failed to update user' });
-//     }
-// };
+export const createUser = (request: { body: { name: any; email: any } }, response: { status: (arg0: number) => { send: (arg0: string) => void } }) => {
+  const { name, email } = request.body;
 
-// export const deleteUser = async (req: Request, res: Response): Promise<void> => {
-//     try {
-//         const id = parseInt(req.params.id, 10);
-//         await userModel.delete(id);
-//         res.status(204).send();
-//     } catch (error) {
-//         res.status(500).json({ error: 'Failed to delete user' });
-//     }
-// };
+  pool.query('INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *', [name, email], (error, results) => {
+    if (error) {
+      throw error;
+    }
+    response.status(201).send(`User added with ID: ${results.rows[0].id}`);
+  });
+};
+
+export const updateUser = (request: { params: { id: string }; body: { name: any; email: any } }, response: { status: (arg0: number) => { send: (arg0: string) => void } }) => {
+  const id = parseInt(request.params.id);
+  const { name, email } = request.body;
+
+  pool.query(
+    'UPDATE users SET name = $1, email = $2 WHERE id = $3',
+    [name, email, id],
+    (error: Error) => {
+      if (error) {
+        throw error;
+      }
+      response.status(200).send(`User modified with ID: ${id}`);
+    }
+  );
+};
+
+export const deleteUser = (request: Request, response: Response): void => {
+  const id: number = parseInt(request.params.id);
+
+  pool.query('DELETE FROM users WHERE id = $1', [id], (error: Error) => {
+    if (error) {
+      throw error;
+    }
+    response.status(200).send(`User deleted with ID: ${id}`);
+  });
+};

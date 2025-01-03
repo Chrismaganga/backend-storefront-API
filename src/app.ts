@@ -2,12 +2,10 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import pool from './config/database';
-import orderRoutes from './routes/orderRoute';
-import { createUser, deleteUser, getUserById, getUsers, updateUser } from './models/user';
-import productRoutes from './routes/productRoutes';
 import { getAllProducts, getProductById, createProduct, updateProduct, deleteProduct } from './controllers/product';
 import upload from './middleware/upload';
-import { getAllOrders } from './controllers/order';
+import { createOrder, deleteOrder, getAllOrders, getOrderById, updateOrder } from './controllers/order';
+import { createUser, deleteUser, getUserById, getUsers, updateUser } from './controllers/user';
 
 
 dotenv.config();
@@ -26,14 +24,13 @@ app.use(express.json());
   }
 })();
 
-// 
-app.use('/api/products', productRoutes);
-app.get('/api', getAllProducts);
+
+app.get('/', getAllProducts);
 app.get('/api/:id', getProductById);
 app.post('/api', upload.single('image'), createProduct);
 app.put('/api/:id', upload.single('image'), updateProduct);
 app.delete('/api/:id', deleteProduct);
-app.use('/api/orders', orderRoutes);
+// app.use('/api/orders', orderRoutes);
 
 
 // users
@@ -42,6 +39,14 @@ app.get('/api/users/:id', getUserById)
 app.post('/api/users', createUser)
 app.put('/api/users/:id', updateUser)
 app.delete('/api/users/:id', deleteUser)
+
+
+//orderRoutes
+app.get('/orders', getAllOrders);
+app.get('/order:id', getOrderById);
+app.post('/order/', createOrder);
+app.put('/:id', updateOrder);
+app.delete('/order/:id', deleteOrder);
 
 
 export default app;
